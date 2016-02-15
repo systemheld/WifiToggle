@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D61E9AEA1BECCBBE00CBE8C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61E9AE91BECCBBE00CBE8C1 /* main.swift */; };
+		D64FC42B1C69DE290025C342 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = D64FC42A1C69DE290025C342 /* Log.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		D61E9AE61BECCBBE00CBE8C1 /* WifiToggle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WifiToggle; sourceTree = BUILT_PRODUCTS_DIR; };
 		D61E9AE91BECCBBE00CBE8C1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		D64FC42A1C69DE290025C342 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,9 +59,18 @@
 		D61E9AE81BECCBBE00CBE8C1 /* WifiToggle */ = {
 			isa = PBXGroup;
 			children = (
+				D64FC4291C69DE130025C342 /* lib */,
 				D61E9AE91BECCBBE00CBE8C1 /* main.swift */,
 			);
 			path = WifiToggle;
+			sourceTree = "<group>";
+		};
+		D64FC4291C69DE130025C342 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				D64FC42A1C69DE290025C342 /* Log.swift */,
+			);
+			name = lib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +130,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D64FC42B1C69DE290025C342 /* Log.swift in Sources */,
 				D61E9AEA1BECCBBE00CBE8C1 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,7 +174,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -200,7 +212,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
@@ -209,6 +221,7 @@
 		D61E9AEE1BECCBBE00CBE8C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				OTHER_SWIFT_FLAGS = "-DDEBUG";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -216,6 +229,8 @@
 		D61E9AEF1BECCBBE00CBE8C1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				OTHER_SWIFT_FLAGS = "-DRELEASE";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -239,6 +254,7 @@
 				D61E9AEF1BECCBBE00CBE8C1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
