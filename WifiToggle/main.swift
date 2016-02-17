@@ -132,19 +132,71 @@ func callback(store: SCDynamicStoreRef, changedKeys: CFArrayRef, info: UnsafeMut
     check_media_status()
 }
 
-// get a callback on every network change: https://github.com/chetan51/sidestep/blob/master/NetworkNotifier.m
-// https://developer.apple.com/library/mac/documentation/Networking/Reference/SCDynamicStore/#//apple_ref/c/tdef/SCDynamicStoreContext
+func start(pidfile: String) {
+    // get a callback on every network change: https://github.com/chetan51/sidestep/blob/master/NetworkNotifier.m
+    // https://developer.apple.com/library/mac/documentation/Networking/Reference/SCDynamicStore/#//apple_ref/c/tdef/SCDynamicStoreContext
+    
+    let pid = String(NSProcessInfo().processIdentifier)
+    do {
+        try pid.writeToFile(pidfile, atomically: true, encoding: NSASCIIStringEncoding)
+    } catch {
+        NSLog("error writing pid to \(pidfile)")
+    }
+    
+    let bundleIdentifier = NSBundle.mainBundle().bundleIdentifier ?? "WifiToggle"
+    guard let store = SCDynamicStoreCreate(nil, bundleIdentifier, callback, nil) else {
+        NSLog("Error: cannot create SCDynamicStore!")
+        exit(1)
+    }
+    
+    // CFRunLoop is stopped in the callback function and here restarted with the updated keys
+    while true {
+        SCDynamicStoreSetNotificationKeys(store, updateKeys(store), nil)
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), SCDynamicStoreCreateRunLoopSource(nil, store, 0), kCFRunLoopDefaultMode)
+        CFRunLoopRun()
+    }
+}
 
-let bundleIdentifier = NSBundle.mainBundle().bundleIdentifier ?? "WifiToggle"
-guard let store = SCDynamicStoreCreate(nil, bundleIdentifier, callback, nil) else {
-    NSLog("Error: cannot create SCDynamicStore!")
+func stop(pidfile: String) {
+    do {
+        if let oldpid = try Int32(String(contentsOfFile: pidfile)) {
+            kill(oldpid, SIGKILL)
+        }
+    } catch {
+        Log("can't read pid file at \(pidfile)")
+    }
+    if NSFileManager.defaultManager().fileExistsAtPath(pidfile) {
+        do {
+            try NSFileManager.defaultManager().removeItemAtPath(pidfile)
+        } catch {
+            Log("error removing \(pidfile)")
+        }
+    }
+}
+
+if getuid() != 0 {
+    print("error: run me as root!")
     exit(1)
 }
 
-// CFRunLoop is stopped in the callback function and here restarted with the updated keys
-while true {
-    SCDynamicStoreSetNotificationKeys(store, updateKeys(store), nil)
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), SCDynamicStoreCreateRunLoopSource(nil, store, 0), kCFRunLoopDefaultMode)
-    CFRunLoopRun()
+let pidfile = "/var/run/WifiToggle.pid"
+
+switch Process.arguments[1] {
+    case "--start":
+        stop(pidfile)
+        start(pidfile)
+    case "--stop":
+        stop(pidfile)
+    case "--version":
+        print("WifiToggle 1.0.0")
+    default:
+        // print usage
+        print("usage: WifiToggle COMMAND")
+        print("\nAvailable commands (there must be exactly one):")
+        print("\t--start")
+        print("\t\t starts this program in daemon mode. You should use launchd(8) to start automatically.")
+        print("\t--stop")
+        print("\t\tend daemon")
+        print("\nThis tools monitors all network interfaces connected and disables the Wifi interface if a wired connection is established.")
 }
 
