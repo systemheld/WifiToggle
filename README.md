@@ -3,8 +3,8 @@
 this is a small daemon to disable Wifi network if a ethernet connection is plugged in and re-enables it when ethernet is pulled. You may run this as a unpriviled user or as root.
 
 ## Todo
-[] add a Menu Bar Icon
-[] add to LoginItems instead of running as launchd job
+- [ ] add a Menu Bar Icon
+- [ ] add to LoginItems instead of running as launchd job
 
 ## Example launchd plist
 
